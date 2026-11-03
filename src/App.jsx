@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, Shield, Activity, Terminal, ArrowUpRight, 
   ChevronRight, Compass, Sparkles, BookOpen, Layers, BarChart2, CheckCircle2,
@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { InstagramIcon } from './components/Icons';
 import { TICKER_DATA } from './data';
+import HeroSpotlight from './components/HeroSpotlight';
 import InteractiveChart from './components/InteractiveChart';
 import RiskCalculator from './components/RiskCalculator';
 import MyStoryTimeline from './components/MyStoryTimeline';
@@ -13,9 +14,28 @@ import PlaybookAndConnect from './components/PlaybookAndConnect';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('edge'); // 'edge' | 'story' | 'vault' | 'connect'
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (totalHeight > 0) {
+        const progress = (window.scrollY / totalHeight) * 100;
+        setScrollProgress(progress);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col relative selection:bg-emerald-500/20 selection:text-emerald-400">
+      
+      {/* 0. Laser Scroll Progress Indicator */}
+      <div 
+        className="fixed top-0 left-0 h-[2.5px] bg-gradient-to-r from-emerald-500 via-teal-400 to-sky-400 z-50 transition-all duration-75"
+        style={{ width: `${scrollProgress}%` }}
+      />
       
       {/* Background Ambience & Glows */}
       <div className="fixed inset-0 bg-grid-pattern pointer-events-none opacity-40 z-0" />
@@ -43,10 +63,15 @@ export default function App() {
       <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-[#09090b]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
           
-          {/* Logo / Brand */}
+          {/* Logo / Brand with Danish's PFP */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-black font-extrabold text-sm tracking-wider shadow-lg shadow-emerald-500/20">
-              DS
+            <div className="relative">
+              <img 
+                src="/danish-pfp.jpg" 
+                alt="Danish Sayed" 
+                className="w-10 h-10 rounded-xl object-cover border border-emerald-400/50 shadow-md"
+              />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-black" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -156,62 +181,11 @@ export default function App() {
            ========================================================================= */}
         {activeTab === 'edge' && (
           <div className="space-y-20">
-            {/* Hero Section */}
-            <div className="text-center max-w-3xl mx-auto space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5" />
-                Systematic Price Action &amp; Liquidity Execution
-              </div>
-
-              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.1] font-sans">
-                The market doesn't reward predictions. <br />
-                <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-sky-400 bg-clip-text text-transparent">
-                  It rewards execution.
-                </span>
-              </h1>
-
-              <p className="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2xl mx-auto font-sans">
-                I am <strong>Danish Sayed</strong> (<span className="text-emerald-400 font-mono">@syed.x21</span>), a full-time intraday trader. I trade institutional liquidity sweeps, order block mitigations, and asymmetric risk models with zero emotional interference.
-              </p>
-
-              {/* Action Jump Buttons */}
-              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-                <button
-                  onClick={() => setActiveTab('story')}
-                  className="px-5 py-2.5 rounded-xl bg-white text-black font-bold font-mono text-xs uppercase tracking-wider hover:bg-zinc-200 transition-all flex items-center gap-2 shadow-lg active:scale-95"
-                >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  Read My Story
-                </button>
-                <button
-                  onClick={() => setActiveTab('vault')}
-                  className="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white font-mono text-xs uppercase tracking-wider border border-white/10 transition-all flex items-center gap-2"
-                >
-                  <Shield className="w-3.5 h-3.5 text-emerald-400" />
-                  Open Risk Vault
-                </button>
-              </div>
-
-              {/* Verified Metrics Strip */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6">
-                <div className="glass-panel p-4 rounded-xl text-center border border-white/5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-white block">20K+</span>
-                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Instagram Traders</span>
-                </div>
-                <div className="glass-panel p-4 rounded-xl text-center border border-white/5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-emerald-400 block">1 : 3.2</span>
-                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Avg Win Risk:Reward</span>
-                </div>
-                <div className="glass-panel p-4 rounded-xl text-center border border-white/5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-sky-400 block">1.0%</span>
-                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Max Risk Per Idea</span>
-                </div>
-                <div className="glass-panel p-4 rounded-xl text-center border border-white/5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-amber-400 block">12,000+</span>
-                  <span className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Live Chart Hours</span>
-                </div>
-              </div>
-            </div>
+            {/* Cinematic Hero Spotlight with Danish's PFP & 3D Interactive Card */}
+            <HeroSpotlight 
+              onExploreStory={() => setActiveTab('story')}
+              onOpenVault={() => setActiveTab('vault')}
+            />
 
             {/* Interactive Live Candlestick Terminal */}
             <div className="space-y-4">
