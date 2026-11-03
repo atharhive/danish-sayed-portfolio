@@ -1,0 +1,17 @@
+name: Bug Report
+description: Report a bug or visual issue
+labels: ["bug"]
+body:
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & OS
+      placeholder: Chrome 122 on macOS / iPhone 15 Safari
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of the Problem
+    validations:
+      required: true
